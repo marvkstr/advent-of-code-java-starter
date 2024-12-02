@@ -3,42 +3,10 @@ package aoc.day02;
 import aoc.Day;
 import aoc.input.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Day02 implements Day {
-
-    @Override
-    public String part1(String input) {
-
-        var readings = prepareInputs(input);
-
-        int result = readings.stream()
-            .mapToInt(reading -> reportIsSafe(reading) ? 1 : 0)
-            .sum();
-
-        return String.valueOf(result);
-    }
-
-    @Override
-    public String part2(String input) {
-        var readings = prepareInputs(input);
-
-        int result = readings.stream()
-            .mapToInt(reading -> reportIsSafe(reading) ? 1 : 0)
-            .sum();
-
-        return String.valueOf(result);
-
-    }
-
-    @Override
-    public List<List<Integer>> prepareInputs(String input) {
-        List<String> lines = Utils.splitLines(input);
-
-        return lines.stream()
-            .map(Utils::splitLine)
-            .toList();
-    }
 
     private static boolean reportIsSafe(List<Integer> levels) {
         return isMonotonous(levels) && isWithinSafeParameters(levels);
@@ -51,9 +19,9 @@ public class Day02 implements Day {
 
         for (int i = 1; i < list.size(); i++) {
             if (list.get(i) > list.get(i - 1)) {
-                    isIncreasing = false;
+                isIncreasing = false;
             } else if (list.get(i) < list.get(i - 1)) {
-                    isDecreasing = false;
+                isDecreasing = false;
             }
         }
 
@@ -72,5 +40,48 @@ public class Day02 implements Day {
         }
 
         return isInSafeParameters;
+    }
+
+    @Override
+    public String part1(String input) {
+
+        var readings = prepareInputs(input);
+
+        int result = readings.stream()
+            .mapToInt(reading -> reportIsSafe(reading) ? 1 : 0)
+            .sum();
+
+        return String.valueOf(result);
+    }
+
+    @Override
+    public String part2(String input) {
+        List<List<Integer>> readings = prepareInputs(input);
+
+        int result = readings.stream()
+            .mapToInt(reading -> {
+                for (int i = 0; i < reading.size(); i++) {
+                    List<Integer> tempList = new ArrayList<>(reading);
+                    tempList.remove(i);
+
+                    if (reportIsSafe(tempList)) {
+                        return 1;
+                    }
+                }
+                return 0;
+            })
+            .sum();
+
+        return String.valueOf(result);
+
+    }
+
+    @Override
+    public List<List<Integer>> prepareInputs(String input) {
+        List<String> lines = Utils.splitLines(input);
+
+        return lines.stream()
+            .map(Utils::splitLine)
+            .toList();
     }
 }
