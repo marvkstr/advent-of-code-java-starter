@@ -3,34 +3,71 @@ package aoc.day01;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Day01Test {
 
-    @Test
-    public void testPart1(){
-        // Given
-        String input = "test";
+    private final String input = """
+        3   4
+        4   3
+        2   5
+        1   3
+        3   9
+        3   3
+        """;
 
+    @Test
+    public void testPart1() {
         // When
         String result = new Day01().part1(input);
 
         // Then
-        assertEquals(input, result);
+        assertEquals("11", result);
     }
 
     @Test
-    public void testPart2(){
-        // Given
-        String input = "test";
+    public void testPart2() {
 
         // When
         String result = new Day01().part2(input);
 
         // Then
-        assertEquals(input, result);
+        assertEquals("31", result);
+    }
+
+    @Test
+    public void testSplitting() {
+        String input = "3   4";
+
+        List<Integer> result = new Day01().splitLine(input);
+
+        assertEquals(3, result.get(0));
+        assertEquals(4, result.get(1));
+    }
+
+    @Test
+    public void testPrepareInputs() {
+        String input = """
+            3   4
+            4   3
+            2   5
+            1   3
+            3   9
+            3   3
+            """;
+
+        List<List<Integer>> result = new Day01().prepareInputs(input);
+
+        assertArrayEquals(Arrays.asList(1, 2, 3, 3, 3, 4)
+            .toArray(), result.get(0)
+            .toArray());
+        assertArrayEquals(Arrays.asList(3, 3, 3, 4, 5, 9)
+            .toArray(), result.get(1)
+            .toArray());
+
     }
 }
