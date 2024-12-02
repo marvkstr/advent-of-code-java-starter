@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Day01 implements Day {
 
@@ -15,17 +16,16 @@ public class Day01 implements Day {
     public String part1(String input) {
         List<List<Integer>> separatedLists = prepareInputs(input);
 
-        int result = 0;
-
-        for (int i = 0; i < separatedLists.get(0)
-            .size(); i++) {
-
-            result += Math.abs(separatedLists.get(0)
-                .get(i) - separatedLists.get(1)
-                .get(i));
-        }
+        int result = calculateAbsoluteDistances(separatedLists.get(0), separatedLists.get(1));
 
         return String.valueOf(result);
+    }
+
+    private static int calculateAbsoluteDistances(List<Integer> first, List<Integer> second) {
+
+        return IntStream.range(0, first.size())
+            .map(index -> Math.abs(first.get(index) - second.get(index)))
+            .sum();
     }
 
     @Override
@@ -33,23 +33,31 @@ public class Day01 implements Day {
 
         List<List<Integer>> separatedLists = prepareInputs(input);
 
-        Map<Integer, Integer> occurences = separatedLists.get(1)
-            .stream()
-            .collect(Collectors.toMap(
-                number -> number,
-                number -> 1,
-                Integer::sum
-            ));
+        Map<Integer, Integer> occurences = countOccurrences(separatedLists.get(1));
 
-        int result = separatedLists.get(0)
-            .stream()
-            .mapToInt(x -> x * occurences.getOrDefault(x, 0))
-            .sum();
+        int result = calculateSimilarityScore(separatedLists.get(0), occurences);
 
         return String.valueOf(result);
 
 
     }
+
+    private static Map<Integer, Integer> countOccurrences(List<Integer> list) {
+        return list.stream()
+            .collect(Collectors.toMap(
+                number -> number,
+                number -> 1,
+                Integer::sum
+            ));
+    }
+
+    private static int calculateSimilarityScore(List<Integer> locationIDs, Map<Integer, Integer> occurences) {
+
+        return locationIDs.stream()
+            .mapToInt(x -> x * occurences.getOrDefault(x, 0))
+            .sum();
+    }
+
 
     protected List<List<Integer>> prepareInputs(String input) {
         List<String> lines = Utils.splitLines(input);
@@ -57,24 +65,27 @@ public class Day01 implements Day {
         List<Integer> firsts = new ArrayList<>();
         List<Integer> seconds = new ArrayList<>();
 
+        lines.stream()
+            .map(this::splitLine)
+            .forEach(line -> {
+                firsts.add(line.get(0));
+                seconds.add(line.get(1));
+            });
+
         for (String entry : lines) {
             List<Integer> parts = splitLine(entry);
             firsts.add(parts.get(0));
             seconds.add(parts.get(1));
         }
 
-        return Arrays.asList(
-            firsts.stream()
-                .sorted()
-                .toList(),
-            seconds.stream()
-                .sorted()
-                .toList());
+        return List.of(
+            firsts.stream().sorted().toList(),
+            seconds.stream().sorted().toList());
     }
 
 
     public List<Integer> splitLine(String input) {
-        return Arrays.stream(input.split("[ \\t\\r\\f]+"))
+        return Arrays.stream(input.trim().split("\\s+"))
             .map(Integer::parseInt)
             .toList();
     }
