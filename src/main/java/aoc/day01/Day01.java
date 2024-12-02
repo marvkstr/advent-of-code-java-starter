@@ -58,35 +58,22 @@ public class Day01 implements Day {
             .sum();
     }
 
-
-    protected List<List<Integer>> prepareInputs(String input) {
+    @Override
+    public List<List<Integer>> prepareInputs(String input) {
         List<String> lines = Utils.splitLines(input);
 
         List<Integer> firsts = new ArrayList<>();
         List<Integer> seconds = new ArrayList<>();
 
         lines.stream()
-            .map(this::splitLine)
+            .map(Utils::splitLine)
             .forEach(line -> {
                 firsts.add(line.get(0));
                 seconds.add(line.get(1));
             });
 
-        for (String entry : lines) {
-            List<Integer> parts = splitLine(entry);
-            firsts.add(parts.get(0));
-            seconds.add(parts.get(1));
-        }
-
         return List.of(
             firsts.stream().sorted().toList(),
             seconds.stream().sorted().toList());
-    }
-
-
-    public List<Integer> splitLine(String input) {
-        return Arrays.stream(input.trim().split("\\s+"))
-            .map(Integer::parseInt)
-            .toList();
     }
 }

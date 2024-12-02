@@ -8,4 +8,10 @@ public class Utils {
     public static List<String> splitLines(String input) {
         return Arrays.asList(input.split(System.lineSeparator()));
     }
+
+    public static List<Integer> splitLine(String input) {
+        return Arrays.stream(input.trim().split("\\s+"))
+            .map(Integer::parseInt)
+            .toList();
+    }
 }

@@ -40,26 +40,7 @@ public class Day01Test {
     }
 
     @Test
-    public void testSplitting() {
-        String input = "3   4";
-
-        List<Integer> result = new Day01().splitLine(input);
-
-        assertEquals(3, result.get(0));
-        assertEquals(4, result.get(1));
-    }
-
-    @Test
     public void testPrepareInputs() {
-        String input = """
-            3   4
-            4   3
-            2   5
-            1   3
-            3   9
-            3   3
-            """;
-
         List<List<Integer>> result = new Day01().prepareInputs(input);
 
         assertArrayEquals(Arrays.asList(1, 2, 3, 3, 3, 4)
