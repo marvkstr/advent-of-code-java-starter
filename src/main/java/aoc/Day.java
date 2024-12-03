@@ -8,6 +8,4 @@ public interface Day {
 
     String part2(String input);
 
-    List<List<Integer>> prepareInputs(String input);
-
 }

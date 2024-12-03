@@ -33,10 +33,9 @@ public class Day02 implements Day {
 
     }
 
-    @Override
     public List<List<Integer>> prepareInputs(String input) {
         return Utils.splitLines(input).stream()
-            .map(Utils::splitLine)
+            .map(line -> Utils.splitLine(line).stream().map(Integer::parseInt).toList())
             .toList();
     }
 

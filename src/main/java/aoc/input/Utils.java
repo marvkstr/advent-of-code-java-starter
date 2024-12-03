@@ -9,9 +9,8 @@ public class Utils {
         return Arrays.asList(input.split(System.lineSeparator()));
     }
 
-    public static List<Integer> splitLine(String input) {
+    public static List<String> splitLine(String input) {
         return Arrays.stream(input.trim().split("\\s+"))
-            .map(Integer::parseInt)
             .toList();
     }
 }

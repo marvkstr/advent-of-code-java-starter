@@ -58,7 +58,6 @@ public class Day01 implements Day {
             .sum();
     }
 
-    @Override
     public List<List<Integer>> prepareInputs(String input) {
         List<String> lines = Utils.splitLines(input);
 
@@ -68,8 +67,8 @@ public class Day01 implements Day {
         lines.stream()
             .map(Utils::splitLine)
             .forEach(line -> {
-                firsts.add(line.get(0));
-                seconds.add(line.get(1));
+                firsts.add(Integer.parseInt(line.get(0)));
+                seconds.add(Integer.parseInt(line.get(1)));
             });
 
         return List.of(
