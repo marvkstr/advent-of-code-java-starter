@@ -93,7 +93,7 @@ public class App {
      *
      */
     public static void runPart2ForDay(int day) {
-        main(String.valueOf(day), "1");
+        main(String.valueOf(day), "2");
     }
 
     /**
