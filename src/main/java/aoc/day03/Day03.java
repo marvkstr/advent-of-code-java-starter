@@ -18,10 +18,10 @@ public class Day03 implements Day {
     @Override
     public String part1(String input) {
         String regex = "mul\\(\\d+,\\d+\\)";
-        List<List<String>> memoryEntries = prepareInputs(input, regex);
+        List<List<String>> memoryEntries = extractMatchingOperations(input, regex);
 
         int result = memoryEntries.stream()
-            .mapToInt( entry -> entry.stream().mapToInt(this::parseToIntegers).sum())
+            .mapToInt( entry -> entry.stream().mapToInt(this::parseToInteger).sum())
             .sum();
 
         return String.valueOf(result);
@@ -30,7 +30,7 @@ public class Day03 implements Day {
     @Override
     public String part2(String input) {
         String regex = "don't\\(\\).*?(do\\(\\)|$)";
-        List<List<String>> memoryEntries = cleanInputs(input, regex);
+        List<List<String>> memoryEntries = filterValidOperations(input, regex);
 
         int result = memoryEntries.stream()
             .mapToInt(this::calculateLineResult)
@@ -39,71 +39,81 @@ public class Day03 implements Day {
         return String.valueOf(result);
     }
 
+    /**
+     * Calculate the result of a line by summing only valid operations.
+     */
     public int calculateLineResult(List<String> operations) {
-        boolean doOperation = true;
+        boolean allowOperation = true;
         int lineResult = 0;
-        int muls = 0;
 
         for (String operation : operations) {
             if (operation.equals("don't()")) {
-                doOperation = false;
+                allowOperation = false;
             } else if (operation.equals("do()")) {
-                doOperation = true;
-            }
-
-            if (doOperation && !(operation.equals("do()"))){
-                lineResult += parseToIntegers(operation);
-                muls ++;
+                allowOperation = true;
+            } else if (allowOperation){
+                lineResult += parseToInteger(operation);
             }
         }
 
-        System.out.println(muls);
         return lineResult;
     }
 
-    public List<List<String>> prepareInputs(String input, String regex) {
+    /**
+     * Extract matching operations using a regex from each line.
+     */
+    public List<List<String>> extractMatchingOperations(String input, String regex) {
         return Utils.splitLines(input)
             .stream()
-            .map(value -> cleanMemory(value, regex))
+            .map(line -> extractMatches(line, regex))
             .toList();
     }
 
-    public List<List<String>> cleanInputs(String input, String regex) {
-
-        // Remove all unwanted segments between don't() and do() or end of line
-        String cleanedInput = input.replaceAll(regex, "");
+    /**
+     * Filter out invalid operations based on the removal regex.
+     */
+    public List<List<String>> filterValidOperations(String input, String removalRegex) {
+        String cleanedInput = input.replaceAll(removalRegex, "");
 
         // Extract valid operations using the given regex
         return Utils.splitLines(cleanedInput)
             .stream()
-            .map(value -> cleanMemory(value, "mul\\(\\d+,\\d+\\)"))
+            .map(line -> extractMatches(line, "mul\\(\\d+,\\d+\\)"))
             .toList();
     }
 
-    public List<String> cleanMemory(String input, String regex) {
-
+    /**
+     * Extract all matches for the given regex in a string.
+     */
+    public List<String> extractMatches(String input, String regex) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
 
-        List<String> memory = new ArrayList<>();
-
+        List<String> matches = new ArrayList<>();
         while (matcher.find()) {
-            memory.add(matcher.group());
+            matches.add(matcher.group());
         }
 
-        return memory;
+        return matches;
     }
 
-    public Integer parseToIntegers(String input) {
+    /**
+     * Parse a "mul(x, y)" string into the product of x and y.
+     */
+    public Integer parseToInteger(String input) {
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(input);
 
         List<Integer> numbers = new ArrayList<>();
-
         while (matcher.find()) {
             numbers.add(Integer.parseInt(matcher.group()));
         }
 
-        return numbers.getFirst() * numbers.getLast();
+        // Ensure we only work with valid "mul(x, y)" patterns
+        if (numbers.size() == 2) {
+            return numbers.get(0) * numbers.get(1);
+        }
+
+        throw new IllegalArgumentException("Invalid operation format: " + input);
     }
 }

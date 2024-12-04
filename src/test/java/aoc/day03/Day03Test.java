@@ -35,7 +35,7 @@ public class Day03Test {
 
         String regex = "mul\\(\\d+,\\d+\\)";
 
-        List<String> result = new Day03().cleanMemory(input, regex);
+        List<String> result = new Day03().extractMatches(input, regex);
 
         assertEquals(List.of("mul(2,4)", "mul(5,5)", "mul(11,8)", "mul(8,5)"), result);
     }
