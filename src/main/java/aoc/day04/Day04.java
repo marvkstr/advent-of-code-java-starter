@@ -46,7 +46,7 @@ public class Day04 implements Day {
     public String part2(String input) {
         List<List<String>> wordSearch = prepareInputs(input);
         List<Pair> centerPieces = findCenterPieces(wordSearch);
-        Map<Pair, String> wordGrid = prepareWordGrid(wordSearch);
+        Map<Pair, String> wordGrid = createWordGrid(wordSearch);
 
         return String.valueOf(centerPieces.stream()
             .filter(pair -> isMasCross(wordGrid, pair))
@@ -57,31 +57,27 @@ public class Day04 implements Day {
     private boolean isMasCross(Map<Pair, String> wordGrid, Pair pair) {
 
         try {
-            var topLeftBottomRight =
-                wordGrid.get(new Pair(pair.row - 1, pair.col - 1)) + wordGrid.get(new Pair(pair.row + 1, pair.col + 1));
-            var topRightToBottomLeft =
-                wordGrid.get(new Pair(pair.row + 1, pair.col - 1)) + wordGrid.get(new Pair(pair.row - 1, pair.col + 1));
+            String topLeftBottomRight = getValue(wordGrid, pair.row - 1, pair.col - 1)
+                + getValue(wordGrid, pair.row + 1, pair.col + 1);
+            String topRightBottomLeft = getValue(wordGrid, pair.row - 1, pair.col + 1)
+                + getValue(wordGrid, pair.row + 1, pair.col - 1);
 
             Pattern regex = Pattern.compile("^(SM|MS)$");
-            return regex.matcher(topLeftBottomRight)
-                .matches() && regex.matcher(topRightToBottomLeft)
-                .matches();
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Index out of bounds, this is fine");
+            return regex.matcher(topLeftBottomRight).matches() && regex.matcher(topRightBottomLeft).matches();
+        } catch (NullPointerException e) {
+            return false; // Out-of-bounds or null values are fine, just skip
         }
-
-        return false;
     }
 
-    private List<Pair> findCenterPieces(List<List<String>> input) {
-        List<Pair> centerPieces = new ArrayList<>();
+    private String getValue(Map<Pair, String> wordGrid, int row, int col) {
+        return wordGrid.getOrDefault(new Pair(row, col), "");
+    }
 
-        for (int row = 0; row < input.size(); row++) {
-            for (int col = 0; col < input.get(row)
-                .size(); col++) {
-                if (input.get(row)
-                    .get(col)
-                    .equals("A")) {
+    private List<Pair> findCenterPieces(List<List<String>> grid) {
+        List<Pair> centerPieces = new ArrayList<>();
+        for (int row = 0; row < grid.size(); row++) {
+            for (int col = 0; col < grid.get(row).size(); col++) {
+                if ("A".equals(grid.get(row).get(col))) {
                     centerPieces.add(new Pair(row, col));
                 }
             }
@@ -89,17 +85,12 @@ public class Day04 implements Day {
         return centerPieces;
     }
 
-    private Map<Pair, String> prepareWordGrid(List<List<String>> wordSearch) {
-
+    private Map<Pair, String> createWordGrid(List<List<String>> wordSearch) {
         Map<Pair, String> wordGrid = new HashMap<>();
-
         for (int row = 0; row < wordSearch.size(); row++) {
-            for (int col = 0; col < wordSearch.get(row)
-                .size(); col++) {
-                wordGrid.put(new Pair(row, col), wordSearch.get(row)
-                    .get(col));
+            for (int col = 0; col < wordSearch.get(row).size(); col++) {
+                wordGrid.put(new Pair(row, col), wordSearch.get(row).get(col));
             }
-
         }
         return wordGrid;
     }
