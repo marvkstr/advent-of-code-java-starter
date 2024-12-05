@@ -15,65 +15,30 @@ public class Day04 implements Day {
         App.runPart1ForDay(4);
     }
 
-    public static List<List<String>> extractDiagonals(List<List<String>> original) {
-        List<List<String>> diagonals = new ArrayList<>();
 
-        int rowCount = original.size();
-        int colCount = original.stream()
-            .mapToInt(List::size)
-            .max()
-            .orElse(0);
-
-        // Diagonalen von oben links nach unten rechts
-        for (int d = 0; d < rowCount + colCount - 1; d++) {
-            List<String> diagonal = new ArrayList<>();
-
-            for (int row = 0; row < rowCount; row++) {
-                int col = d - row;
-
-                // Wenn der Index innerhalb der Grenzen der Zeile und der Spalten liegt
-                if (col >= 0 && col < original.get(row)
-                    .size()) {
-                    diagonal.add(original.get(row)
-                        .get(col));
-                }
-            }
-
-            // Nur nicht-leere Diagonalen hinzufügen
-            if (!diagonal.isEmpty()) {
-                diagonals.add(diagonal);
-            }
-        }
-
-        return diagonals;
-    }
 
     @Override
     public String part1(String input) {
 
         List<List<String>> wordSearch = prepareInputs(input);
 
-        var result = getResult(wordSearch);
+        var result = countOccurrencesInAllDirections(wordSearch);
 
         return String.valueOf(result);
     }
 
-    private int getResult(List<List<String>> wordSearch) {
-        var result = countXmasInDirection(wordSearch);
-        result += countXmasInDirection(pivot(wordSearch));
-        result += countXmasInDirection(extractDiagonals(wordSearch));
-        result += countXmasInDirection(extractReverseDiagonals(wordSearch));
+    private int countOccurrencesInAllDirections(List<List<String>> wordSearch) {
+        var result = 0;
+        result += countOccurrencesInLines(wordSearch);
+        result += countOccurrencesInLines(transposeGrid(wordSearch));
+        result += countOccurrencesInLines(extractDiagonals(wordSearch));
+        result += countOccurrencesInLines(extractReverseDiagonals(wordSearch));
         return result;
     }
 
-    private int countXmasInDirection(List<List<String>> wordGrid) {
+    private int countOccurrencesInLines(List<List<String>> wordGrid) {
         return wordGrid.stream()
-            .mapToInt(line -> {
-                var temp = 0;
-                temp += countXmas(line);
-                temp += countXmas(line.reversed());
-                return temp;
-            })
+            .mapToInt(line -> countOccurrencesInLine(line) + countOccurrencesInLine(line.reversed()))
             .sum();
     }
 
@@ -89,70 +54,82 @@ public class Day04 implements Day {
             .toList();
     }
 
-    public int countXmas(List<String> wordSearchLine) {
-        StringBuilder builder = new StringBuilder();
+    public int countOccurrencesInLine(List<String> wordSearchLine) {
+        String line = String.join("", wordSearchLine);
+        return countPatternOccurrences(line, "XMAS");
+    }
 
-        wordSearchLine.forEach(builder::append);
-
-        var line = builder.toString();
-
-        Pattern pattern = Pattern.compile("XMAS");
-        Matcher matcher = pattern.matcher(line);
+    private static int countPatternOccurrences(String line, String pattern) {
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(line);
 
         int counter = 0;
-
         while (matcher.find()) {
             counter++;
         }
-
         return counter;
     }
 
-    public List<List<String>> pivot(List<List<String>> original) {
-
-        if (original == null || original.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        List<List<String>> pivoted = new ArrayList<>();
+    public List<List<String>> transposeGrid(List<List<String>> original) {
 
         int rowCount = original.size();
-        int colCount = original.getFirst()
-            .size();
+        int colCount = original.getFirst().size();
 
+        List<List<String>> transposed = new ArrayList<>();
         for (int col = 0; col < colCount; col++) {
-
             List<String> newRow = new ArrayList<>();
-
             for (int row = 0; row < rowCount; row++) {
-
-                newRow.add(original.get(row)
-                    .get(col));
-
+                newRow.add(original.get(row).get(col));
             }
-
-            pivoted.add(newRow);
+            transposed.add(newRow);
         }
 
-        return pivoted;
+        return transposed;
     }
 
-    public List<List<String>> extractReverseDiagonals(List<List<String>> original) {
-        List<List<String>> diagonals = new ArrayList<>();
-        int rowCount = original.size();
-        int colCount = original.get(0).size();
+    /**
+     * Extract diagonals from the grid (top-left to bottom-right).
+     */
+    private List<List<String>> extractDiagonals(List<List<String>> grid) {
+        int rowCount = grid.size();
+        int colCount = grid.get(0).size();
 
-        // Bottom-left to top-right diagonals
+        List<List<String>> diagonals = new ArrayList<>();
+        for (int d = 0; d < rowCount + colCount - 1; d++) {
+            List<String> diagonal = new ArrayList<>();
+            for (int row = 0; row < rowCount; row++) {
+                int col = d - row;
+                if (col >= 0 && col < colCount) {
+                    diagonal.add(grid.get(row).get(col));
+                }
+            }
+            if (!diagonal.isEmpty()) {
+                diagonals.add(diagonal);
+            }
+        }
+        return diagonals;
+    }
+
+    /**
+     * Extract reverse diagonals from the grid (bottom-left to top-right).
+     */
+    private List<List<String>> extractReverseDiagonals(List<List<String>> grid) {
+        int rowCount = grid.size();
+        int colCount = grid.get(0).size();
+
+        List<List<String>> reverseDiagonals = new ArrayList<>();
         for (int d = 0; d < rowCount + colCount - 1; d++) {
             List<String> diagonal = new ArrayList<>();
             for (int row = 0; row < rowCount; row++) {
                 int col = d - (rowCount - 1 - row);
                 if (col >= 0 && col < colCount) {
-                    diagonal.add(original.get(row).get(col));
+                    diagonal.add(grid.get(row).get(col));
                 }
             }
-            if (!diagonal.isEmpty()) diagonals.add(diagonal);
+            if (!diagonal.isEmpty()) {
+                reverseDiagonals.add(diagonal);
+            }
         }
-        return diagonals;
+        return reverseDiagonals;
     }
 }

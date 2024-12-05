@@ -1,6 +1,5 @@
 package aoc.day04;
 
-import aoc.Day;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -61,24 +60,24 @@ class Day04Test {
     }
 
     @Test
-    public void countXmas() {
+    public void countOccurrencesInLine() {
 
-        int result = day.countXmas(Arrays.stream("XMASAMXAMM".split("")).toList());
+        int result = day.countOccurrencesInLine(Arrays.stream("XMASAMXAMM".split("")).toList());
         assertEquals(1, result);
 
-        result = day.countXmas(Arrays.stream("XMASAMXAMM".split("")).toList().reversed());
+        result = day.countOccurrencesInLine(Arrays.stream("XMASAMXAMM".split("")).toList().reversed());
         assertEquals(1, result);
     }
 
     @Test
-    public void pivot() {
+    public void transposeGrid() {
 
         List<List<String>> original = new ArrayList<>();
         original.add(List.of("A", "B", "C"));
         original.add(List.of("D", "E", "F"));
         original.add(List.of("G", "H", "I"));
 
-        List<List<String>> result = day.pivot(original);
+        List<List<String>> result = day.transposeGrid(original);
 
         List<List<String>> expected = new ArrayList<>();
         expected.add(List.of("A", "D", "G"));
@@ -89,7 +88,7 @@ class Day04Test {
     }
 
     @Test
-    public void prepareDiagonalSearch() {
+    public void extractDiagonals() {
 
         List<List<String>> result = day.extractDiagonals(day.prepareInputs(inputSmall));
 
@@ -105,6 +104,30 @@ class Day04Test {
         expected.add(List.of("A", "S", "A", "M", "S").reversed());
         expected.add(List.of("M", "M", "A", "S", "M").reversed());
         expected.add(List.of("X", "S", "M", "A").reversed());
+        expected.add(List.of("-", "-", "-"));
+        expected.add(List.of("-", "-"));
+        expected.add(List.of("-"));
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void extractReverseDiagonals() {
+
+        List<List<String>> result = day.extractReverseDiagonals(day.prepareInputs(inputSmall));
+
+        List<List<String>> expected = new ArrayList<>();
+        expected.add(List.of("-"));
+        expected.add(List.of("-", "-"));
+        expected.add(List.of("-", "-", "-"));
+        expected.add(List.of("M", "M", "A", "S"));
+        expected.add(List.of("X", "S", "X", "M", "X"));
+        expected.add(List.of("M", "A", "S", "X", "X"));
+        expected.add(List.of("A", "M", "X", "M", "M"));
+        expected.add(List.of("S", "A", "M", "S", "A"));
+        expected.add(List.of("A", "S", "A", "M", "S"));
+        expected.add(List.of("M", "M", "A", "S", "M"));
+        expected.add(List.of("X", "S", "M", "A"));
         expected.add(List.of("-", "-", "-"));
         expected.add(List.of("-", "-"));
         expected.add(List.of("-"));
