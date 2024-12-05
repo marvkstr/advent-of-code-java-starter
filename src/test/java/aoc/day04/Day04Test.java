@@ -46,7 +46,7 @@ class Day04Test {
 
         String result = day.part2(input);
 
-        assertEquals("18", result);
+        assertEquals("9", result);
     }
 
     @Test
