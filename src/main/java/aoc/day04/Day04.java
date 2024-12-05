@@ -140,8 +140,7 @@ public class Day04 implements Day {
     public List<List<String>> extractReverseDiagonals(List<List<String>> original) {
         List<List<String>> diagonals = new ArrayList<>();
         int rowCount = original.size();
-        int colCount = original.get(0)
-            .size();
+        int colCount = original.get(0).size();
 
         // Bottom-left to top-right diagonals
         for (int d = 0; d < rowCount + colCount - 1; d++) {
