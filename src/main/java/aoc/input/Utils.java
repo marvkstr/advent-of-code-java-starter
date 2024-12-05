@@ -10,7 +10,11 @@ public class Utils {
     }
 
     public static List<String> splitLine(String input) {
-        return Arrays.stream(input.trim().split("\\s+"))
+        return splitLine(input.trim(), "\\s+");
+    }
+
+    public static List<String> splitLine(String input, String regex) {
+        return Arrays.stream(input.trim().split(regex))
             .toList();
     }
 }
