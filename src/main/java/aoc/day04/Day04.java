@@ -148,8 +148,7 @@ public class Day04 implements Day {
             for (int row = 0; row < rowCount; row++) {
                 int col = d - (rowCount - 1 - row);
                 if (col >= 0 && col < colCount) {
-                    diagonal.add(original.get(row)
-                        .get(col));
+                    diagonal.add(original.get(row).get(col));
                 }
             }
             if (!diagonal.isEmpty()) diagonals.add(diagonal);
