@@ -54,7 +54,7 @@ public class Day04 implements Day {
             .toList();
     }
 
-    public int countOccurrencesInLine(List<String> wordSearchLine) {
+    protected int countOccurrencesInLine(List<String> wordSearchLine) {
         String line = String.join("", wordSearchLine);
         return countPatternOccurrences(line, "XMAS");
     }
@@ -70,7 +70,7 @@ public class Day04 implements Day {
         return counter;
     }
 
-    public List<List<String>> transposeGrid(List<List<String>> original) {
+    protected List<List<String>> transposeGrid(List<List<String>> original) {
 
         int rowCount = original.size();
         int colCount = original.getFirst().size();
@@ -90,7 +90,7 @@ public class Day04 implements Day {
     /**
      * Extract diagonals from the grid (top-left to bottom-right).
      */
-    private List<List<String>> extractDiagonals(List<List<String>> grid) {
+    protected List<List<String>> extractDiagonals(List<List<String>> grid) {
         int rowCount = grid.size();
         int colCount = grid.get(0).size();
 
@@ -113,7 +113,7 @@ public class Day04 implements Day {
     /**
      * Extract reverse diagonals from the grid (bottom-left to top-right).
      */
-    private List<List<String>> extractReverseDiagonals(List<List<String>> grid) {
+    protected List<List<String>> extractReverseDiagonals(List<List<String>> grid) {
         int rowCount = grid.size();
         int colCount = grid.get(0).size();
 
